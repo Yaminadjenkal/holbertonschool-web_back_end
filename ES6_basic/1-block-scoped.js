@@ -9,4 +9,3 @@ export default function taskBlock(trueOrFalse) {
 
   return [task, task2]; // Renvoie les valeurs initiales définies avec const
 }
-
