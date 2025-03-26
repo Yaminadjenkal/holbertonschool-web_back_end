@@ -1,5 +1,5 @@
 export function taskFirst() {
-  const task = 'I prefer const when I can.'; // Utilise const car la valeur ne change pas
+  const task = 'I prefer const when I can.';
   return task;
 }
 
@@ -8,7 +8,7 @@ export function getLast() {
 }
 
 export function taskNext() {
-  let combination = 'But sometimes let'; // Utilise let car la valeur est modifiée
+  let combination = 'But sometimes let';
   combination += getLast();
 
   return combination;
