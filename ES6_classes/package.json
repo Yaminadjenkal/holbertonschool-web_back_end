@@ -1,0 +1,9 @@
+{
+  "name": "holbertonschool-web_back_end",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "eslint": "^9.23.0"
+  }
+}
+
