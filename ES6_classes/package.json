@@ -4,6 +4,9 @@
   "type": "module",
   "dependencies": {
     "eslint": "^9.23.0"
+  },
+  "scripts": {
+    "test": "node 2-main.js"
   }
 }
 
