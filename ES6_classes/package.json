@@ -1,20 +1,9 @@
 {
-  "name": "holbertonschool-web_back_end",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "eslint": "^9.23.0"
-  },
-  "scripts": {
-    "test-2": "node 2-main.js",
-    "test-3": "node 3-main.js",
-    "test-4": "node 4-main.js",
-    "test-5": "node 5-main.js",
-    "test-6": "node 6-main.js",
-    "test-7": "node 7-main.js",
-    "test-8": "node 8-main.js",
-    "test-9": "node 9-main.js",
-    "test-10": "node 10-main.js"
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "eslint": "^9.23.0",
+    "eslint-plugin-vue": "^10.0.0",
+    "globals": "^16.0.0",
+    "typescript-eslint": "^8.28.0"
   }
 }
-
