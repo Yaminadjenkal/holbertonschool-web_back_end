@@ -52,5 +52,4 @@ class LRUCache(BaseCaching):
         # Move key to the end (most recently used)
         self.order.remove(key)
         self.order.append(key)
-
         return self.cache_data.get(key)
