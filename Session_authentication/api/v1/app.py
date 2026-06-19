@@ -17,67 +17,45 @@ auth_type = getenv("AUTH_TYPE")
 if auth_type == "basic_auth":
     from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
-elif auth_type == "session_auth":
-    from api.v1.auth.session_auth import SessionAuth
-    auth = SessionAuth()
-elif auth_type == "session_exp_auth":
-    from api.v1.auth.session_exp_auth import SessionExpAuth
-    auth = SessionExpAuth()
-elif auth_type == "session_db_auth":
-    from api.v1.auth.session_db_auth import SessionDBAuth
-    auth = SessionDBAuth()
 
 
 @app.before_request
 def before_request_handler():
-    """
-    Executed before each request:
-    - Check if authentication is required
-    - Set request.current_user
-    """
+    """Filter each request before processing"""
 
     if auth is None:
         return
 
-    excluded_paths = [
+    excluded = [
         "/api/v1/status/",
         "/api/v1/unauthorized/",
-        "/api/v1/forbidden/",
-        "/api/v1/auth_session/login/"
+        "/api/v1/forbidden/"
     ]
 
-    # If the path does not require authentication → allow
-    if not auth.require_auth(request.path, excluded_paths):
+    if not auth.require_auth(request.path, excluded):
         return
 
-    # If no Authorization header or no session cookie → 401
-    if auth.authorization_header(request) is None and \
-       auth.session_cookie(request) is None:
+    if auth.authorization_header(request) is None:
         abort(401)
 
-    # Set the current user
     request.current_user = auth.current_user(request)
 
-    # If authentication failed → 403
     if request.current_user is None:
         abort(403)
 
 
 @app.errorhandler(401)
 def unauthorized(error):
-    """Unauthorized request"""
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
 def forbidden(error):
-    """Forbidden request"""
     return jsonify({"error": "Forbidden"}), 403
 
 
 @app.errorhandler(404)
 def not_found(error):
-    """Not found"""
     return jsonify({"error": "Not found"}), 404
 
 
@@ -85,3 +63,4 @@ if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
     app.run(host=host, port=port)
+

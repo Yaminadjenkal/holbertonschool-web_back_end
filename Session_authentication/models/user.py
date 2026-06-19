@@ -1,59 +1,30 @@
 #!/usr/bin/env python3
-""" User module
 """
-import hashlib
-from models.base import Base
+User view module
+"""
+from flask import jsonify, abort, request
+from models.user import User
+from api.v1.views import app_views
 
 
-class User(Base):
-    """ User class
-    """
+@app_views.route('/users', methods=['GET'], strict_slashes=False)
+def get_users():
+    """Retrieve all users"""
+    users = User.all()
+    return jsonify([user.to_dict() for user in users])
 
-    def __init__(self, *args: list, **kwargs: dict):
-        """ Initialize a User instance
-        """
-        super().__init__(*args, **kwargs)
-        self.email = kwargs.get('email')
-        self._password = kwargs.get('_password')
-        self.first_name = kwargs.get('first_name')
-        self.last_name = kwargs.get('last_name')
 
-    @property
-    def password(self) -> str:
-        """ Getter of the password
-        """
-        return self._password
+@app_views.route('/users/<user_id>', methods=['GET'], strict_slashes=False)
+def get_user(user_id):
+    """Retrieve a user"""
 
-    @password.setter
-    def password(self, pwd: str):
-        """ Setter of a new password: encrypt in SHA256
-        """
-        if pwd is None or type(pwd) is not str:
-            self._password = None
-        else:
-            self._password = hashlib.sha256(pwd.encode()).hexdigest().lower()
+    if user_id == "me":
+        if request.current_user is None:
+            abort(404)
+        return jsonify(request.current_user.to_dict())
 
-    def is_valid_password(self, pwd: str) -> bool:
-        """ Validate a password
-        """
-        if pwd is None or type(pwd) is not str:
-            return False
-        if self.password is None:
-            return False
-        pwd_e = pwd.encode()
-        return hashlib.sha256(pwd_e).hexdigest().lower() == self.password
+    user = User.get(user_id)
+    if user is None:
+        abort(404)
 
-    def display_name(self) -> str:
-        """ Display User name based on email/first_name/last_name
-        """
-        if self.email is None and self.first_name is None \
-                and self.last_name is None:
-            return ""
-        if self.first_name is None and self.last_name is None:
-            return "{}".format(self.email)
-        if self.last_name is None:
-            return "{}".format(self.first_name)
-        if self.first_name is None:
-            return "{}".format(self.last_name)
-        else:
-            return "{} {}".format(self.first_name, self.last_name)
+    return jsonify(user.to_dict())
