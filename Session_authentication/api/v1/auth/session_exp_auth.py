@@ -50,3 +50,4 @@ class SessionExpAuth(SessionAuth):
             return None
 
         return session_dict.get("user_id")
+

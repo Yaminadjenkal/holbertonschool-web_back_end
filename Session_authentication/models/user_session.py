@@ -7,7 +7,7 @@ from models.base import BaseModel
 
 
 class UserSession(BaseModel, Base):
-    """UserSession class"""
+    """UserSession class to store session data"""
 
     def __init__(self, *args, **kwargs):
         """Initialize UserSession"""

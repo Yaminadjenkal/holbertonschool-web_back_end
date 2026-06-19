@@ -1,39 +1,35 @@
 #!/usr/bin/env python3
 """
-Authentication module
+Auth module
 """
+
 from flask import request
 from typing import List, TypeVar
+import os
 
 
-class Auth:
-    """Template for all authentication systems"""
-
+class Auth():
+    """ Authentication class """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """
-        Check if a path requires authentication
-        """
-
+        """ Determine if authentication is required """
         if path is None:
             return True
 
-        if excluded_paths is None or len(excluded_paths) == 0:
+        if not excluded_paths:
             return True
 
         if not path.endswith('/'):
-            path = path + '/'
+            path += '/'
 
-        for ex_path in excluded_paths:
-            if ex_path.endswith('/') and path == ex_path:
+        for excluded_path in excluded_paths:
+            if path == excluded_path:
                 return False
 
         return True
 
-    def authorization_header(self, request=None) -> str:
-        """
-        Returns the Authorization header value
-        """
-
+    def authorization_header(self,
+                             request=None) -> str:
+        """ Returns Authorization header from request """
         if request is None:
             return None
 
@@ -43,7 +39,18 @@ class Auth:
         return request.headers.get("Authorization")
 
     def current_user(self, request=None) -> TypeVar('User'):
-        """
-        Returns None - to be implemented in subclasses
-        """
+        """  Returns False for now """
         return None
+
+    def session_cookie(self, request=None):
+        """
+        Returns a cookie value from a request
+        """
+        if request is None:
+            return None
+
+        # Retrieve the name of cookie from env variable
+        cookie_name = os.getenv("SESSION_NAME")
+
+        # Retrieve the value of cookie in the request
+        return request.cookies.get(cookie_name)
