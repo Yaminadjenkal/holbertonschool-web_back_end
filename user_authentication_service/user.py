@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-User model
+SQLAlchemy model named User for a database table named users
 """
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
 
 class User(Base):
-    """SQLAlchemy User model for the users table"""
-    __tablename__ = "users"
+    """
+    User model
+    """
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     email = Column(String(250), nullable=False)
