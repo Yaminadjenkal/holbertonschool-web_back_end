@@ -4,7 +4,7 @@ Redis basic exercise
 """
 import redis
 import uuid
-from typing import Union, Callable, Optional, List
+from typing import Union, Callable, Optional
 from functools import wraps
 
 
@@ -21,16 +21,16 @@ def count_calls(method: Callable) -> Callable:
 
 
 def call_history(method: Callable) -> Callable:
-    """Store the history of inputs and outputs for a function"""
+    """Decorator to store the history of inputs and outputs"""
     input_key = method.__qualname__ + ":inputs"
     output_key = method.__qualname__ + ":outputs"
 
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        # Save input
+        # Save input arguments
         self._redis.rpush(input_key, str(args))
 
-        # Execute method
+        # Execute original method
         result = method(self, *args, **kwargs)
 
         # Save output
@@ -39,21 +39,6 @@ def call_history(method: Callable) -> Callable:
         return result
 
     return wrapper
-
-
-def replay(method: Callable):
-    """Display the history of calls of a particular function"""
-    redis_instance = method.__self__._redis
-    name = method.__qualname__
-
-    calls = redis_instance.get(name)
-    inputs = redis_instance.lrange(name + ":inputs", 0, -1)
-    outputs = redis_instance.lrange(name + ":outputs", 0, -1)
-
-    print(f"{name} was called {int(calls) if calls else 0} times:")
-
-    for inp, out in zip(inputs, outputs):
-        print(f"{name}(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}")
 
 
 class Cache:
